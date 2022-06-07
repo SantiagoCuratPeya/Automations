@@ -26,7 +26,7 @@ q = '''WITH trusted_table AS (
       GROUP BY 1)
 SELECT o.order_id AS order_id,
        o.user.id AS user_id,
-       IFNULL(o.total_amount_with_delivery_costs,0) AS total_amount_local,
+       IFNULL(o.total_amount_with_delivery_costs,0) AS amount_paid_by_user,
        o.registered_date AS fecha,
        o.registered_at AS fecha_at,
        o.fail_rate_owner AS fr_owner,
@@ -56,17 +56,15 @@ HAVING fr_owner != 'User'
 ORDER BY mins_to_cancellation DESC,1,2'''
 
 # Descargo la data
-#bq = pd.io.gbq.read_gbq(q, credentials=cred_bq, project_id='peya-growth-and-onboarding', dialect='standard')
+bq = pd.io.gbq.read_gbq(q, credentials=cred_bq, project_id='peya-growth-and-onboarding', dialect='standard')
 
 # Copio las bases
-#df = bq.copy()
-
-df = pd.DataFrame.from_dict({'user_id': [3137104,1900147], 'amount_paid_by_user': [250,100]})
+df = bq.copy()
 
 ### CARGA
 
 # Llamo a la funcion de propiedades
-prop = create_prop(df, 'user_id')
+prop = create_prop(df[['user_id', 'amount_paid_by_user']], 'user_id')
 # Llamo a la funcion batch_users
 users = batch_users(df['user_id'].tolist(), "autocomp_cancellation", prop)
 # Hago el upload
