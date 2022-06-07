@@ -61,12 +61,15 @@ bq = pd.io.gbq.read_gbq(q, credentials=cred_bq, project_id='peya-growth-and-onbo
 # Copio las bases
 df = bq.copy()
 
+# Creo una PT por usuario
+pt = df.pivot_table(index=['user_id'], values=['amount_paid_by_user'], aggfunc='max', fill_value=0).reset_index()
+
 ### CARGA
 
 # Llamo a la funcion de propiedades
-prop = create_prop(df[['user_id', 'amount_paid_by_user']], 'user_id')
+prop = create_prop(pt[['user_id', 'amount_paid_by_user']], 'user_id')
 # Llamo a la funcion batch_users
-users = batch_users(df['user_id'].tolist(), "autocomp_cancellation", prop)
+users = batch_users(pt['user_id'].tolist(), "autocomp_cancellation", prop)
 # Hago el upload
 res = upload_braze(users, BRAZE_KEY_ID, BRAZE_KEY_URL)
 
