@@ -14,9 +14,8 @@ cred_bq = get_credentials('BQ')
 ### TRABAJO
 
 # Consigo las credenciales de Braze
-braze = download('1d4cMi-V04c80Dpen4S70Q7zYqqho3ZBIVctlRIBLwiw', 'Braze', cred_sheets)
-url = braze[braze['Type'] == 'url']['Key'].values[0]
-api = braze[braze['Type'] == 'api']['Key'].values[0]
+BRAZE_KEY_ID = os.environ.get('BRAZE_KEY_ID', None)
+BRAZE_KEY_URL = os.environ.get('BRAZE_KEY_URL', None)
 
 # Queries
 q = '''WITH trusted_table AS (
