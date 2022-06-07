@@ -68,7 +68,7 @@ prop = create_prop(df[['user_id', 'amount_paid_by_user']], 'user_id')
 # Llamo a la funcion batch_users
 users = batch_users(df['user_id'].tolist(), "autocomp_cancellation", prop)
 # Hago el upload
-res = upload_braze(users, api, url)
+res = upload_braze(users, BRAZE_KEY_ID, BRAZE_KEY_URL)
 
 ### LOG
 
